@@ -1,0 +1,24 @@
+modLoader="javafml"
+loaderVersion="[2,)"
+license="MIT"
+
+[[mods]]
+modId="engineersdecor"
+version="1.3.31"
+displayName="Engineer's Decor (NeoForge Port)"
+authors="wilechaote, Igraund"
+description='''Adds cosmetic blocks for the engineer's workshop, factory and home.'''
+
+[[dependencies.engineersdecor]]
+modId="neoforge"
+type="required"
+versionRange="[21.1,)"
+ordering="NONE"
+side="BOTH"
+
+[[dependencies.engineersdecor]]
+modId="minecraft"
+type="required"
+versionRange="[1.21.1,)"
+ordering="NONE"
+side="BOTH"

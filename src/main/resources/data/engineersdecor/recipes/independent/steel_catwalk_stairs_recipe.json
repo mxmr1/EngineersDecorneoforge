@@ -1,0 +1,31 @@
+{
+  "type": "forge:conditional",
+  "recipes": [
+    {
+      "conditions": [
+        {
+          "type": "engineersdecor:optional",
+          "result": "engineersdecor:steel_catwalk_stairs",
+          "required": ["engineersdecor:steel_catwalk"]
+        }
+      ],
+      "recipe": {
+        "type": "minecraft:crafting_shaped",
+        "pattern": [
+          "S  ",
+          "SS ",
+          "SSS"
+        ],
+        "key": {
+          "S": {
+            "item": "engineersdecor:steel_catwalk"
+          }
+        },
+        "result": {
+          "item": "engineersdecor:steel_catwalk_stairs",
+          "count": 6
+        }
+      }
+    }
+  ]
+}

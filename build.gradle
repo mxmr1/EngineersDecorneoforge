@@ -1,0 +1,160 @@
+plugins {
+    id 'java-library'
+    id 'maven-publish'
+    id 'net.neoforged.moddev' version '2.0.107'
+    id 'idea'
+}
+
+version = project.mod_version
+group = project.mod_group_id
+
+base {
+    archivesName = project.mod_id
+}
+
+// Mojang ships Java 21 to end users in 1.21.1, so mods should target Java 21.
+java.toolchain.languageVersion = JavaLanguageVersion.of(21)
+
+neoForge {
+    version = project.neo_version // 21.1.209 из gradle.properties
+    parchment {
+        mappingsVersion = project.parchment_mappings_version // 2024.11.17
+        minecraftVersion = project.parchment_minecraft_version // 1.21.1
+    }
+
+    runs {
+        configureEach {
+            systemProperty 'forge.logging.markers', 'REGISTRIES'
+            logLevel = org.slf4j.event.Level.DEBUG
+        }
+        client {
+            client()
+            systemProperty 'neoforge.enabledGameTestNamespaces', project.mod_id
+        }
+        server {
+            server()
+            programArgument '--nogui'
+            systemProperty 'neoforge.enabledGameTestNamespaces', project.mod_id
+        }
+        gameTestServer {
+            type = "gameTestServer"
+            systemProperty 'neoforge.enabledGameTestNamespaces', project.mod_id
+        }
+        data {
+            data()
+            programArguments.addAll '--mod', project.mod_id, '--all', '--output', file('src/generated/resources/').getAbsolutePath(), '--existing', file('src/main/resources/').getAbsolutePath()
+        }
+
+    }
+
+    mods {
+        "${project.mod_id}" {
+            sourceSet(sourceSets.main)
+        }
+    }
+}
+
+sourceSets.main.resources { srcDir 'src/generated/resources' }
+
+repositories {
+    maven {
+        name = "Jared's maven"
+        url = "https://maven.blamejared.com/" // Актуальный репозиторий JEI
+    }
+    maven {
+        name = "ModMaven"
+        url = "https://modmaven.dev" // Fallback
+    }
+    flatDir {
+        dir 'libs'
+    }
+}
+
+dependencies {
+    // JEI для 1.21.1 NeoForge (актуальная версия 19.18.3.204)
+    compileOnly "mezz.jei:jei-${project.minecraft_version}-common-api:19.18.3.204"
+    compileOnly "mezz.jei:jei-${project.minecraft_version}-neoforge-api:19.18.3.204"
+    runtimeOnly "mezz.jei:jei-${project.minecraft_version}-neoforge:19.18.3.204"
+    // Create (основная зависимость)
+    runtimeOnly files("libs/create-1.21.1-6.0.6.jar")
+
+    // Create Crafts & Additions (расширение с энергией)
+    runtimeOnly files("libs/createaddition-1.5.5.jar")
+}
+
+tasks.named('processResources', ProcessResources).configure {
+    // Определяем свойства вне замыкания
+    def minecraft_version = project.minecraft_version
+    def minecraft_version_range = project.minecraft_version_range
+    def neo_version = project.neo_version
+    def loader_version_range = project.loader_version_range
+    def mod_id = project.mod_id
+    def mod_name = project.mod_name
+    def mod_license = project.mod_license
+    def mod_version = project.mod_version
+    def mod_authors = project.mod_authors
+    def mod_description = project.mod_description
+
+    def replaceProperties = [
+            minecraft_version: minecraft_version, minecraft_version_range: minecraft_version_range,
+            neo_version: neo_version, loader_version_range: loader_version_range,
+            mod_id: mod_id, mod_name: mod_name, mod_license: mod_license, mod_version: mod_version,
+            mod_authors: mod_authors, mod_description: mod_description
+    ]
+    inputs.properties replaceProperties
+    filesMatching(['META-INF/mods.toml', 'pack.mcmeta']) {
+        expand replaceProperties
+    }
+    // Убрано doLast с Git-командой, так как несовместимо с конфигурационным кэшем
+}
+
+// Опциональная задача для записи версии Git (если нужна)
+tasks.register('updateGitVersion', Copy) {
+    def outputDir = sourceSets.main.output.resourcesDir
+    outputs.file("${outputDir}/.gitversion-rsgauges")
+    doLast {
+        if (file('.git').exists()) {я
+            def gitVersion = 'git log "-1" "--format=%h"'.execute().in.text.trim()
+            file("${outputDir}/.gitversion-rsgauges").text = gitVersion
+        }
+    }
+}
+
+tasks.named('jar', Jar).configure {
+    manifest {
+        attributes([
+                'Specification-Title'    : project.mod_id,
+                'Specification-Vendor'   : project.mod_authors,
+                'Specification-Version'  : '1',
+                'Implementation-Title'   : project.name,
+                'Implementation-Version' : project.jar.archiveVersion,
+                'Implementation-Vendor'  : project.mod_authors,
+                'Implementation-Timestamp': new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
+        ])
+    }
+
+}
+
+publishing {
+    publications {
+        register('mavenJava', MavenPublication) {
+            from components.java
+        }
+    }
+    repositories {
+        maven {
+            url "file://${project.projectDir}/repo"
+        }
+    }
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = 'UTF-8'
+}
+
+idea {
+    module {
+        downloadSources = true
+        downloadJavadoc = true
+    }
+}

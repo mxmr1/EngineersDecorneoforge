@@ -1,0 +1,33 @@
+{
+  "type": "forge:conditional",
+  "recipes": [
+    {
+      "conditions": [
+        {
+          "type": "engineersdecor:optional",
+          "result": "engineersdecor:dark_shingle_roof_metallized",
+          "required": [ "engineersdecor:dark_shingle_roof", "engineersdecor:metal_bar" ]
+        }
+      ],
+      "recipe": {
+        "type": "minecraft:crafting_shaped",
+        "pattern": [
+          "NNN",
+          "RRR"
+        ],
+        "key": {
+          "N": {
+            "item": "engineersdecor:metal_bar"
+          },
+          "R": {
+            "item": "engineersdecor:dark_shingle_roof"
+          }
+        },
+        "result": {
+          "item": "engineersdecor:dark_shingle_roof_metallized",
+          "count": 4
+        }
+      }
+    }
+  ]
+}

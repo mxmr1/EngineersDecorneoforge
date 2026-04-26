@@ -1,0 +1,30 @@
+{
+  "type": "forge:conditional",
+  "recipes": [
+    {
+      "conditions": [
+        {
+          "type": "engineersdecor:optional",
+          "result": "engineersdecor:steel_floor_grating",
+          "required": ["engineersdecor:steel_catwalk"]
+        }
+      ],
+      "recipe": {
+        "type": "minecraft:crafting_shaped",
+        "pattern": [
+          "SS",
+          "SS"
+        ],
+        "key": {
+          "S": {
+            "item": "engineersdecor:steel_catwalk"
+          }
+        },
+        "result": {
+          "item": "engineersdecor:steel_floor_grating",
+          "count": 2
+        }
+      }
+    }
+  ]
+}

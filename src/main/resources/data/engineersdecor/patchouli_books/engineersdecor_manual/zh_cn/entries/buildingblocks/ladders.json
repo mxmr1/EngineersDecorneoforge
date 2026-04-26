@@ -1,0 +1,14 @@
+{
+  "name": "梯子",
+  "icon": "engineersdecor:metal_rung_ladder",
+  "category": "engineersdecor:buildingblocks",
+  "sortnum": 1080,
+  "pages": [
+    {
+      "type": "spotlight",
+      "title": "Metal Ladders",
+      "item": "engineersdecor:metal_rung_ladder",
+      "text": "坚固的金属梯子，有时有点生锈。$(br2)使用和放置与木梯子相同。"
+    }
+  ]
+}

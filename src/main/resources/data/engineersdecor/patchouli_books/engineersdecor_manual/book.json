@@ -1,0 +1,10 @@
+{
+  "name": "engineersdecor.book.name",
+  "creative_tab": "tabengineersdecor",
+  "subtitle": "engineersdecor.book.subtitle",
+  "version": 0,
+  "model": "engineersdecor:manual",
+  "show_progress": false,
+  "show_toasts": false,
+  "landing_text": "engineersdecor.book.landing_text"
+}

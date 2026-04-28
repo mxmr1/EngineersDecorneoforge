@@ -181,7 +181,10 @@ public class EDRegistries
 
     @Nonnull
     public static List<Item> getRegisteredItems()
-    { return Collections.unmodifiableList(registered_items.values().stream().map(DeferredHolder::get).collect(Collectors.toList())); }
+    { return Collections.unmodifiableList(registered_items.entrySet().stream()
+            .sorted(Map.Entry.comparingByKey())
+            .map(e -> e.getValue().get())
+            .collect(Collectors.toList())); }
 
     @Nonnull
     public static List<BlockEntityType<?>> getRegisteredBlockEntityTypes()

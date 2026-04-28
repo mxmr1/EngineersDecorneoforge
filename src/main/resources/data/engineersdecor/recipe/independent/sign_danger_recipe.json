@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "item": "engineersdecor:sign_hotwire"
+    }
+  ],
+  "result": {
+    "id": "engineersdecor:sign_danger"
+  },
+  "neoforge:conditions": [
+    {
+      "type": "engineersdecor:optional",
+      "result": "engineersdecor:sign_danger",
+      "required": [
+        "engineersdecor:sign_hotwire"
+      ]
+    }
+  ]
+}

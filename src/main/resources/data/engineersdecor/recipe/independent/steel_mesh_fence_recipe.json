@@ -1,0 +1,29 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "PNP",
+    "PNP"
+  ],
+  "key": {
+    "P": {
+      "item": "engineersdecor:thin_steel_pole"
+    },
+    "N": {
+      "item": "engineersdecor:metal_bar"
+    }
+  },
+  "result": {
+    "id": "engineersdecor:steel_mesh_fence",
+    "count": 6
+  },
+  "neoforge:conditions": [
+    {
+      "type": "engineersdecor:optional",
+      "result": "engineersdecor:steel_mesh_fence",
+      "required": [
+        "engineersdecor:thin_steel_pole",
+        "engineersdecor:metal_bar"
+      ]
+    }
+  ]
+}

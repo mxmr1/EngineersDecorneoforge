@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "SS",
+    "SS"
+  ],
+  "key": {
+    "S": {
+      "item": "engineersdecor:dark_shingle_roof_slab"
+    }
+  },
+  "result": {
+    "id": "engineersdecor:dark_shingle_roof_slabslice",
+    "count": 16
+  },
+  "neoforge:conditions": [
+    {
+      "type": "engineersdecor:optional",
+      "result": "engineersdecor:dark_shingle_roof_slabslice",
+      "required": [
+        "engineersdecor:dark_shingle_roof_slab"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "C",
+    "C"
+  ],
+  "key": {
+    "C": {
+      "item": "engineersdecor:rebar_concrete_tile_slab"
+    }
+  },
+  "result": {
+    "id": "engineersdecor:rebar_concrete_tile",
+    "count": 1
+  },
+  "neoforge:conditions": [
+    {
+      "type": "engineersdecor:optional",
+      "result": "engineersdecor:rebar_concrete_tile",
+      "required": [
+        "engineersdecor:rebar_concrete_tile_slab"
+      ]
+    }
+  ]
+}

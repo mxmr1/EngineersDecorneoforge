@@ -1,0 +1,30 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "WWW",
+    "S S",
+    "S S"
+  ],
+  "key": {
+    "W": {
+      "item": "engineersdecor:metal_bar"
+    },
+    "S": {
+      "item": "engineersdecor:thin_steel_pole"
+    }
+  },
+  "result": {
+    "id": "engineersdecor:steel_table",
+    "count": 2
+  },
+  "neoforge:conditions": [
+    {
+      "type": "engineersdecor:optional",
+      "result": "engineersdecor:steel_table",
+      "required": [
+        "engineersdecor:metal_bar",
+        "engineersdecor:thin_steel_pole"
+      ]
+    }
+  ]
+}

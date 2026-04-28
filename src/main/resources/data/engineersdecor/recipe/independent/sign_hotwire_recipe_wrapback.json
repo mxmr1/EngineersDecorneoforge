@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "item": "engineersdecor:sign_frost"
+    }
+  ],
+  "result": {
+    "id": "engineersdecor:sign_hotwire"
+  },
+  "neoforge:conditions": [
+    {
+      "type": "engineersdecor:optional",
+      "result": "engineersdecor:sign_hotwire",
+      "required": [
+        "engineersdecor:sign_frost"
+      ]
+    }
+  ]
+}

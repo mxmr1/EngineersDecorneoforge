@@ -60,6 +60,7 @@ public class ModEngineersDecor {
 
         // Регистрация кодеков условий
         CONDITION_CODECS.register(modEventBus);
+        ModConditions.register(modEventBus);
 
         // Слушатели инициализации
         modEventBus.addListener(this::onSetup);

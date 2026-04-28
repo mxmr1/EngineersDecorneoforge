@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "item": "engineersdecor:sign_caution"
+    }
+  ],
+  "result": {
+    "id": "engineersdecor:sign_magichazard"
+  },
+  "neoforge:conditions": [
+    {
+      "type": "engineersdecor:optional",
+      "result": "engineersdecor:sign_magichazard",
+      "required": [
+        "engineersdecor:sign_caution"
+      ]
+    }
+  ]
+}

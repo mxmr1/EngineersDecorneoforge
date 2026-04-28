@@ -1,0 +1,26 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "   ",
+    "   ",
+    "CCC"
+  ],
+  "key": {
+    "C": {
+      "item": "engineersdecor:slag_brick_block"
+    }
+  },
+  "result": {
+    "id": "engineersdecor:slag_brick_slab",
+    "count": 6
+  },
+  "neoforge:conditions": [
+    {
+      "type": "engineersdecor:optional",
+      "result": "engineersdecor:slag_brick_slab",
+      "required": [
+        "engineersdecor:slag_brick_block"
+      ]
+    }
+  ]
+}

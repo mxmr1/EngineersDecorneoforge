@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "item": "engineersdecor:sign_radioactive"
+    }
+  ],
+  "result": {
+    "id": "engineersdecor:sign_laser"
+  },
+  "neoforge:conditions": [
+    {
+      "type": "engineersdecor:optional",
+      "result": "engineersdecor:sign_laser",
+      "required": [
+        "engineersdecor:sign_radioactive"
+      ]
+    }
+  ]
+}

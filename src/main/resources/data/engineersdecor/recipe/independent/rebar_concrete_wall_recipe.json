@@ -1,0 +1,26 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "   ",
+    "CCC",
+    "CCC"
+  ],
+  "key": {
+    "C": {
+      "item": "engineersdecor:rebar_concrete"
+    }
+  },
+  "result": {
+    "id": "engineersdecor:rebar_concrete_wall",
+    "count": 6
+  },
+  "neoforge:conditions": [
+    {
+      "type": "engineersdecor:optional",
+      "result": "engineersdecor:rebar_concrete_wall",
+      "required": [
+        "engineersdecor:rebar_concrete"
+      ]
+    }
+  ]
+}

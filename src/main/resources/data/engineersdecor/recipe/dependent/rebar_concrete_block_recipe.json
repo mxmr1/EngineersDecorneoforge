@@ -1,0 +1,30 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "SCS",
+    "CSC",
+    "SCS"
+  ],
+  "key": {
+    "C": {
+      "item": "immersiveengineering:concrete"
+    },
+    "S": {
+      "item": "engineersdecor:metal_bar"
+    }
+  },
+  "result": {
+    "id": "engineersdecor:rebar_concrete",
+    "count": 4
+  },
+  "neoforge:conditions": [
+    {
+      "type": "engineersdecor:optional",
+      "result": "engineersdecor:rebar_concrete",
+      "required": [
+        "immersiveengineering:concrete",
+        "engineersdecor:metal_bar"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "item": "engineersdecor:sign_laser"
+    }
+  ],
+  "result": {
+    "id": "engineersdecor:sign_caution"
+  },
+  "neoforge:conditions": [
+    {
+      "type": "engineersdecor:optional",
+      "result": "engineersdecor:sign_caution",
+      "required": [
+        "engineersdecor:sign_laser"
+      ]
+    }
+  ]
+}

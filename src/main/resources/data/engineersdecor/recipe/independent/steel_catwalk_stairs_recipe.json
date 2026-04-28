@@ -1,0 +1,26 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "S  ",
+    "SS ",
+    "SSS"
+  ],
+  "key": {
+    "S": {
+      "item": "engineersdecor:steel_catwalk"
+    }
+  },
+  "result": {
+    "id": "engineersdecor:steel_catwalk_stairs",
+    "count": 6
+  },
+  "neoforge:conditions": [
+    {
+      "type": "engineersdecor:optional",
+      "result": "engineersdecor:steel_catwalk_stairs",
+      "required": [
+        "engineersdecor:steel_catwalk"
+      ]
+    }
+  ]
+}

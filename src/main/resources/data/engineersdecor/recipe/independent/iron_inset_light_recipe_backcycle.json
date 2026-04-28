@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "item": "engineersdecor:iron_bulb_light"
+    }
+  ],
+  "result": {
+    "id": "engineersdecor:iron_inset_light"
+  },
+  "neoforge:conditions": [
+    {
+      "type": "engineersdecor:optional",
+      "result": "engineersdecor:iron_inset_light",
+      "required": [
+        "engineersdecor:iron_bulb_light"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,26 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "PP",
+    "PP",
+    "PP"
+  ],
+  "key": {
+    "P": {
+      "item": "engineersdecor:old_industrial_wood_planks"
+    }
+  },
+  "result": {
+    "id": "engineersdecor:old_industrial_wood_door",
+    "count": 2
+  },
+  "neoforge:conditions": [
+    {
+      "type": "engineersdecor:optional",
+      "result": "engineersdecor:old_industrial_wood_door",
+      "required": [
+        "engineersdecor:old_industrial_wood_planks"
+      ]
+    }
+  ]
+}

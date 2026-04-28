@@ -1,0 +1,33 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "   ",
+    "GGG",
+    "PLP"
+  ],
+  "key": {
+    "P": {
+      "item": "engineersdecor:metal_bar"
+    },
+    "L": {
+      "item": "minecraft:glowstone"
+    },
+    "G": {
+      "item": "minecraft:glass_pane"
+    }
+  },
+  "result": {
+    "id": "engineersdecor:iron_inset_light",
+    "count": 8
+  },
+  "neoforge:conditions": [
+    {
+      "type": "engineersdecor:optional",
+      "result": "engineersdecor:iron_inset_light",
+      "required": [
+        "minecraft:glowstone",
+        "engineersdecor:metal_bar"
+      ]
+    }
+  ]
+}

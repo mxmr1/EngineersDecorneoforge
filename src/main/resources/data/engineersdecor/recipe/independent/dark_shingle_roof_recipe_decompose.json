@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "RR",
+    "RR"
+  ],
+  "key": {
+    "R": {
+      "item": "engineersdecor:dark_shingle_roof"
+    }
+  },
+  "result": {
+    "id": "engineersdecor:dark_shingle_roof_block",
+    "count": 3
+  },
+  "neoforge:conditions": [
+    {
+      "type": "engineersdecor:optional",
+      "result": "engineersdecor:dark_shingle_roof_block",
+      "required": [
+        "engineersdecor:dark_shingle_roof"
+      ]
+    }
+  ]
+}

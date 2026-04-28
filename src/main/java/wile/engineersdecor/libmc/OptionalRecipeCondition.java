@@ -37,6 +37,21 @@ public class OptionalRecipeCondition implements ICondition {
     private static boolean without_recipes = false;
     private static Predicate<Object> block_optouts = b -> false;
     private static Predicate<Object> item_optouts = i -> false;
+    /**
+     * Helper: split a list of strings into item RLs and tag RLs based on "#" prefix.
+     */
+    private static void splitByTag(List<String> input,
+                                   List<ResourceLocation> items,
+                                   List<ResourceLocation> tags) {
+        for (String s : input) {
+            if (s.startsWith("#")) {
+                tags.add(ResourceLocation.parse(s.substring(1)));
+            } else {
+                items.add(ResourceLocation.parse(s));
+            }
+        }
+    }
+
 
     // ---------- NeoForge Codec Registration ----------
     public static final MapCodec<OptionalRecipeCondition> CODEC = RecordCodecBuilder.mapCodec(instance ->
@@ -66,11 +81,18 @@ public class OptionalRecipeCondition implements ICondition {
                     }
                     res = ResourceLocation.parse(s);
                 }
-                List<ResourceLocation> reqRL = req.stream().map(ResourceLocation::parse).collect(Collectors.toList());
-                List<ResourceLocation> missRL = miss.stream().map(ResourceLocation::parse).collect(Collectors.toList());
-                List<ResourceLocation> reqTagRL = reqTags.stream().map(ResourceLocation::parse).collect(Collectors.toList());
-                List<ResourceLocation> missTagRL = missTags.stream().map(ResourceLocation::parse).collect(Collectors.toList());
-                return new OptionalRecipeCondition(res, reqRL, missRL, reqTagRL, missTagRL, exp, tag);
+                // Split 'required' and 'missing' into items vs tags automatically
+                List<ResourceLocation> reqItems = new ArrayList<>();
+                List<ResourceLocation> reqTagRL = new ArrayList<>();
+                splitByTag(req, reqItems, reqTagRL);
+                for (String s : reqTags) reqTagRL.add(ResourceLocation.parse(s));
+
+                List<ResourceLocation> missItems = new ArrayList<>();
+                List<ResourceLocation> missTagRL = new ArrayList<>();
+                splitByTag(miss, missItems, missTagRL);
+                for (String s : missTags) missTagRL.add(ResourceLocation.parse(s));
+
+                return new OptionalRecipeCondition(res, reqItems, missItems, reqTagRL, missTagRL, exp, tag);
             })
     );
 

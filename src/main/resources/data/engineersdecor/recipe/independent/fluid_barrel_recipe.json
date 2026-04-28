@@ -1,0 +1,29 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "PPP",
+    "PBP",
+    "PPP"
+  ],
+  "key": {
+    "B": {
+      "item": "minecraft:barrel"
+    },
+    "P": {
+      "item": "engineersdecor:metal_bar"
+    }
+  },
+  "result": {
+    "id": "engineersdecor:fluid_barrel",
+    "count": 1
+  },
+  "neoforge:conditions": [
+    {
+      "type": "engineersdecor:optional",
+      "result": "engineersdecor:fluid_barrel",
+      "required": [
+        "engineersdecor:metal_bar"
+      ]
+    }
+  ]
+}

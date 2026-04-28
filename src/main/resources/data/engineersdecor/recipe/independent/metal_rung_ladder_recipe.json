@@ -1,0 +1,26 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "S S",
+    "SSS",
+    "   "
+  ],
+  "key": {
+    "S": {
+      "item": "engineersdecor:metal_bar"
+    }
+  },
+  "result": {
+    "id": "engineersdecor:metal_rung_ladder",
+    "count": 4
+  },
+  "neoforge:conditions": [
+    {
+      "type": "engineersdecor:optional",
+      "result": "engineersdecor:metal_rung_ladder",
+      "required": [
+        "engineersdecor:metal_bar"
+      ]
+    }
+  ]
+}

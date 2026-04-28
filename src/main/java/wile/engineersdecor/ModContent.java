@@ -575,7 +575,7 @@ public class ModContent
                 Auxiliaries.getPixeledAABB(2,2,15.6, 14,14,16)
         ));
         EDRegistries.addBlock("sign_magichazard", ()->new StandardBlocks.DirectedWaterLoggable(
-                StandardBlocks.CFG_CUTOUT|StandardBlocks.CFG_FACING_PLACEMENT|StandardBlocks.CFG_HORIZIONTAL|StandardBlocks.CFG_AI_PASSABLE,
+                StandardBlocks.CFG_CUTOUT|StandardBlocks.CFG_FACING_PLACEMENT|StandardBlocks.CFG_AI_PASSABLE,
                 BlockBehaviour.Properties.ofFullCopy(Blocks.OAK_WOOD).mapColor(Blocks.OAK_WOOD.defaultMapColor()).strength(0.2f, 1f).sound(SoundType.WOOD).noOcclusion(),
                 Auxiliaries.getPixeledAABB(2,2,15.6, 14,14,16)
         ));

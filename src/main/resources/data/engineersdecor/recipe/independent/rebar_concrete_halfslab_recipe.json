@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "SS",
+    "SS"
+  ],
+  "key": {
+    "S": {
+      "item": "engineersdecor:rebar_concrete_slab"
+    }
+  },
+  "result": {
+    "id": "engineersdecor:halfslab_rebar_concrete",
+    "count": 16
+  },
+  "neoforge:conditions": [
+    {
+      "type": "engineersdecor:optional",
+      "result": "engineersdecor:halfslab_rebar_concrete",
+      "required": [
+        "engineersdecor:rebar_concrete_slab"
+      ]
+    }
+  ]
+}

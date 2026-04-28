@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "item": "engineersdecor:sign_firehazard"
+    }
+  ],
+  "result": {
+    "id": "engineersdecor:sign_hotsurface"
+  },
+  "neoforge:conditions": [
+    {
+      "type": "engineersdecor:optional",
+      "result": "engineersdecor:sign_hotsurface",
+      "required": [
+        "engineersdecor:sign_firehazard"
+      ]
+    }
+  ]
+}

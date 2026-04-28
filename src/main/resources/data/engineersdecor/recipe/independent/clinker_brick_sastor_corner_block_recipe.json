@@ -1,0 +1,28 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "BS",
+    "SB"
+  ],
+  "key": {
+    "B": {
+      "item": "engineersdecor:clinker_brick_block"
+    },
+    "S": {
+      "item": "minecraft:sandstone_stairs"
+    }
+  },
+  "result": {
+    "id": "engineersdecor:clinker_brick_sastor_corner_block",
+    "count": 4
+  },
+  "neoforge:conditions": [
+    {
+      "type": "engineersdecor:optional",
+      "result": "engineersdecor:clinker_brick_sastor_corner_block",
+      "required": [
+        "engineersdecor:clinker_brick_block"
+      ]
+    }
+  ]
+}

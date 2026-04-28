@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "item": "engineersdecor:thin_steel_pole_head"
+    }
+  ],
+  "result": {
+    "id": "engineersdecor:thin_steel_pole"
+  },
+  "neoforge:conditions": [
+    {
+      "type": "engineersdecor:optional",
+      "result": "engineersdecor:thin_steel_pole",
+      "required": [
+        "engineersdecor:thin_steel_pole_head"
+      ]
+    }
+  ]
+}

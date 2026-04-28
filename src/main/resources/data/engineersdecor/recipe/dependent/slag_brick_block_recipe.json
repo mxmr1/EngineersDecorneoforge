@@ -1,0 +1,30 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "BBB",
+    "BSB",
+    "BBB"
+  ],
+  "key": {
+    "B": {
+      "tag": "engineersdecor:brick_ingots"
+    },
+    "S": {
+      "item": "immersiveengineering:slag"
+    }
+  },
+  "result": {
+    "id": "engineersdecor:slag_brick_block",
+    "count": 8
+  },
+  "neoforge:conditions": [
+    {
+      "type": "engineersdecor:optional",
+      "result": "engineersdecor:clinker_brick_block",
+      "required": [
+        "immersiveengineering:slag",
+        "#engineersdecor:brick_ingots"
+      ]
+    }
+  ]
+}

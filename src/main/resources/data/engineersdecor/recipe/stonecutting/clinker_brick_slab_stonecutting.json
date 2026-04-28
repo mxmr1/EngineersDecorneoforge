@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:stonecutting",
+  "ingredient": {
+    "item": "engineersdecor:clinker_brick_block"
+  },
+  "result": {
+    "id": "engineersdecor:clinker_brick_slab",
+    "count": 2
+  },
+  "neoforge:conditions": [
+    {
+      "type": "engineersdecor:optional",
+      "result": "engineersdecor:clinker_brick_slab",
+      "required": [
+        "engineersdecor:clinker_brick_block"
+      ]
+    }
+  ]
+}

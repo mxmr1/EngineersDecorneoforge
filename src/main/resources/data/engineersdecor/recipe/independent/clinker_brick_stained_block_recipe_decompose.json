@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "item": "engineersdecor:clinker_brick_stained_block"
+    }
+  ],
+  "result": {
+    "id": "engineersdecor:clinker_brick_block"
+  },
+  "neoforge:conditions": [
+    {
+      "type": "engineersdecor:optional",
+      "result": "engineersdecor:clinker_brick_block",
+      "required": [
+        "engineersdecor:clinker_brick_stained_block"
+      ]
+    }
+  ]
+}

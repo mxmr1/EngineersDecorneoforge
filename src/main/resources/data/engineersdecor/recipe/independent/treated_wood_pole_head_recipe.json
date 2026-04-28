@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "item": "engineersdecor:treated_wood_pole"
+    }
+  ],
+  "result": {
+    "id": "engineersdecor:treated_wood_pole_head"
+  },
+  "neoforge:conditions": [
+    {
+      "type": "engineersdecor:optional",
+      "result": "engineersdecor:treated_wood_pole_head",
+      "required": [
+        "engineersdecor:treated_wood_pole"
+      ]
+    }
+  ]
+}

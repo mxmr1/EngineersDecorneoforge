@@ -1,0 +1,26 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "   ",
+    "   ",
+    "CCC"
+  ],
+  "key": {
+    "C": {
+      "item": "engineersdecor:panzerglass_block"
+    }
+  },
+  "result": {
+    "id": "engineersdecor:panzerglass_slab",
+    "count": 6
+  },
+  "neoforge:conditions": [
+    {
+      "type": "engineersdecor:optional",
+      "result": "engineersdecor:panzerglass_block",
+      "required": [
+        "engineersdecor:rebar_concrete_tile"
+      ]
+    }
+  ]
+}

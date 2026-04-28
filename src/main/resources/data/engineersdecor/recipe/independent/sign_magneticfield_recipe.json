@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "item": "engineersdecor:sign_hotsurface"
+    }
+  ],
+  "result": {
+    "id": "engineersdecor:sign_magneticfield"
+  },
+  "neoforge:conditions": [
+    {
+      "type": "engineersdecor:optional",
+      "result": "engineersdecor:sign_magneticfield",
+      "required": [
+        "engineersdecor:sign_hotsurface"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "SS",
+    "SS"
+  ],
+  "key": {
+    "S": {
+      "item": "engineersdecor:old_industrial_wood_slabslice"
+    }
+  },
+  "result": {
+    "id": "engineersdecor:old_industrial_wood_slab",
+    "count": 1
+  },
+  "neoforge:conditions": [
+    {
+      "type": "engineersdecor:optional",
+      "result": "engineersdecor:old_industrial_wood_slab",
+      "required": [
+        "engineersdecor:old_industrial_wood_slabslice"
+      ]
+    }
+  ]
+}

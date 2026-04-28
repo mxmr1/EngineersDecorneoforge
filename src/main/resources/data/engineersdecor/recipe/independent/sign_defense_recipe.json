@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "item": "engineersdecor:sign_danger"
+    }
+  ],
+  "result": {
+    "id": "engineersdecor:sign_defense"
+  },
+  "neoforge:conditions": [
+    {
+      "type": "engineersdecor:optional",
+      "result": "engineersdecor:sign_defense",
+      "required": [
+        "engineersdecor:sign_danger"
+      ]
+    }
+  ]
+}

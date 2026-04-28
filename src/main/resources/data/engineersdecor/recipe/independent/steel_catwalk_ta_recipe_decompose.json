@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "item": "engineersdecor:steel_catwalk_ta"
+    }
+  ],
+  "result": {
+    "id": "engineersdecor:steel_catwalk"
+  },
+  "neoforge:conditions": [
+    {
+      "type": "engineersdecor:optional",
+      "result": "engineersdecor:steel_catwalk",
+      "required": [
+        "engineersdecor:steel_catwalk_ta"
+      ]
+    }
+  ]
+}

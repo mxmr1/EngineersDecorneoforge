@@ -1,9 +1,9 @@
 /*
- * @file OptionalRecipeCondition.java
- * @author Stefan Wilhelm
- * @license MIT
+ * @文件 OptionalRecipeCondition.java
+ * @作者 Stefan Wilhelm
+ * @许可 MIT
  *
- * Updated for NeoForge 21.1.209 (Codec-based conditions)
+ * 已更新至 NeoForge 21.1.209（基于 Codec 的条件）
  */
 package wile.engineersdecor.libmc;
 
@@ -38,7 +38,7 @@ public class OptionalRecipeCondition implements ICondition {
     private static Predicate<Object> block_optouts = b -> false;
     private static Predicate<Object> item_optouts = i -> false;
     /**
-     * Helper: split a list of strings into item RLs and tag RLs based on "#" prefix.
+     * 辅助方法：根据 "#" 前缀将字符串列表拆分为物品资源位置和标签资源位置。
      */
     private static void splitByTag(List<String> input,
                                    List<ResourceLocation> items,
@@ -53,7 +53,7 @@ public class OptionalRecipeCondition implements ICondition {
     }
 
 
-    // ---------- NeoForge Codec Registration ----------
+    // ---------- NeoForge Codec 注册 ----------
     public static final MapCodec<OptionalRecipeCondition> CODEC = RecordCodecBuilder.mapCodec(instance ->
             instance.group(
                     Codec.STRING.optionalFieldOf("result").forGetter(c ->
@@ -81,7 +81,7 @@ public class OptionalRecipeCondition implements ICondition {
                     }
                     res = ResourceLocation.parse(s);
                 }
-                // Split 'required' and 'missing' into items vs tags automatically
+                // 自动将 'required' 和 'missing' 拆分为物品与标签
                 List<ResourceLocation> reqItems = new ArrayList<>();
                 List<ResourceLocation> reqTagRL = new ArrayList<>();
                 splitByTag(req, reqItems, reqTagRL);
@@ -101,7 +101,7 @@ public class OptionalRecipeCondition implements ICondition {
         return CODEC;
     }
 
-    // ---------- Existing Logic ----------
+    // ---------- 现有逻辑 ----------
     public static void init(String modid, Logger logger) {
         NAME = ResourceLocation.fromNamespaceAndPath(modid, "optional");
     }

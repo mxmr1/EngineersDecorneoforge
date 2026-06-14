@@ -3,12 +3,11 @@
  * @author Stefan
  * @license MIT
  *
- * Networking for Engineer's Decor — NeoForge 1.21.1 (21.1.209)
+ * Engineer's Decor 的网络通信 — NeoForge 1.21.1 (21.1.209)
  */
 
 package wile.engineersdecor.network;
 
-import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
@@ -20,15 +19,14 @@ import net.neoforged.neoforge.network.PacketDistributor;
 import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 import net.neoforged.neoforge.network.registration.PayloadRegistrar;
-import net.minecraft.world.level.ChunkPos;
+import wile.engineersdecor.libmc.Networking;  // 导入自定义接口
 
-@EventBusSubscriber(modid = "engineersdecor") // 🆕 Удален bus
+@EventBusSubscriber(modid = "engineersdecor")
 public class EdNetworking {
 
-    public static final ResourceLocation CONTAINER_SYNC_ID = ResourceLocation.fromNamespaceAndPath("engineersdecor", "container_sync"); // 🆕 Исправлено
+    public static final ResourceLocation CONTAINER_SYNC_ID = ResourceLocation.fromNamespaceAndPath("engineersdecor", "container_sync");
 
-
-    // ======== PAYLOAD: Container Sync ========
+    // ======== PAYLOAD: 容器同步 ========
     public record ContainerSyncPayload(int windowId, CompoundTag nbt) implements CustomPacketPayload {
         public static final Type<ContainerSyncPayload> TYPE = new Type<>(CONTAINER_SYNC_ID);
 
@@ -46,29 +44,29 @@ public class EdNetworking {
         );
     }
 
-    // ======== EVENT: Register payloads ========
-    @SubscribeEvent
+    // ======== 事件: 注册载荷 ========
+    @SubscribeEvent()
     public static void registerPayloads(RegisterPayloadHandlersEvent event) {
         final PayloadRegistrar registrar = event.registrar("engineersdecor");
-
-
-        // playToServer — server-bound packets (container updates etc.)
+        // playToServer — 发送至服务端的数据包（容器更新等）
         registrar.playToServer(ContainerSyncPayload.TYPE, ContainerSyncPayload.STREAM_CODEC, EdNetworking::handleContainerSync);
     }
 
-
-    // ======== HANDLER: Container sync ========
+    // ======== 处理: 容器同步 ========
     private static void handleContainerSync(ContainerSyncPayload payload, IPayloadContext context) {
         context.enqueueWork(() -> {
-            if (context.player() == null) return;
-            if (context.player().containerMenu.containerId == payload.windowId) {
-                context.player().containerMenu.broadcastChanges();
+            var player = context.player();
+            if (player == null) return;
+            var menu = player.containerMenu;
+            // 检查菜单 ID 匹配，并且菜单实现了我们的网络同步接口
+            if (menu.containerId == payload.windowId && menu instanceof Networking.INetworkSynchronisableContainer syncMenu) {
+                syncMenu.onClientPacketReceived(payload.windowId, player, payload.nbt);
+                menu.broadcastChanges();  // 将更改同步回客户端
             }
         });
     }
 
-
-
+    // ======== 客户端发送辅助方法 ========
     public static void sendContainerSync(int windowId, CompoundTag nbt) {
         ContainerSyncPayload payload = new ContainerSyncPayload(windowId, nbt);
         PacketDistributor.sendToServer(payload);

@@ -1,16 +1,9 @@
-/*
- * @file EdHopper.java
- * @author Stefan Wilhelm (wile)
- * @copyright (C) 2020 Stefan Wilhelm
- * @license MIT (see https://opensource.org/licenses/MIT)
- *
- * Hopper, factory automation suitable.
- */
 package wile.engineersdecor.blocks;
 
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -24,7 +17,9 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.*;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.Explosion;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.SignalGetter;
 import net.minecraft.world.level.block.Block;
@@ -40,17 +35,16 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.neoforge.capabilities.Capabilities;
+import net.neoforged.neoforge.common.extensions.IBlockExtension;
 import net.neoforged.neoforge.items.IItemHandler;
 import wile.engineersdecor.ModContent;
-import net.minecraft.core.component.DataComponents;
-import net.minecraft.world.item.component.CustomData;
-import net.minecraft.nbt.CompoundTag;
 import wile.engineersdecor.libmc.*;
+import wile.engineersdecor.network.EdNetworking;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.BiConsumer;
 import java.util.function.Supplier;
 
 public class EdHopper
@@ -59,10 +53,10 @@ public class EdHopper
     {}
 
     //--------------------------------------------------------------------------------------------------------------------
-    // Block
+    // 方块
     //--------------------------------------------------------------------------------------------------------------------
 
-    public static class HopperBlock extends StandardBlocks.Directed implements StandardEntityBlocks.IStandardEntityBlock<EdHopper.HopperTileEntity>
+    public static class HopperBlock extends StandardBlocks.Directed implements StandardEntityBlocks.IStandardEntityBlock<EdHopper.HopperTileEntity>, IBlockExtension
     {
         public HopperBlock(long config, BlockBehaviour.Properties builder, final Supplier<ArrayList<VoxelShape>> shape_supplier)
         { super(config, builder, shape_supplier); }
@@ -107,6 +101,18 @@ public class EdHopper
             te.setChanged();
         }
 
+        // 提取公共方法：生成带方块实体数据的物品栈，同时清空库存
+        private ItemStack createHopperItemWithData(HopperTileEntity hopper) {
+            ItemStack stack = new ItemStack(this);
+            CompoundTag teData = hopper.clear_getnbt(); // 获取完整 NBT 并清空库存
+            if (!teData.isEmpty()) {
+                CompoundTag wrapper = new CompoundTag();
+                wrapper.put("tedata", teData);
+                stack.set(DataComponents.CUSTOM_DATA, CustomData.of(wrapper));
+            }
+            return stack;
+        }
+
         @Override
         public boolean hasDynamicDropList()
         { return true; }
@@ -116,30 +122,60 @@ public class EdHopper
         {
             final List<ItemStack> stacks = new ArrayList<>();
             if(world.isClientSide) return stacks;
-            if(!(te instanceof HopperTileEntity)) return stacks;
-            if(!explosion) {
-                ItemStack stack = new ItemStack(this);
-                CompoundTag te_nbt = ((HopperTileEntity) te).clear_getnbt();
-                if (!te_nbt.isEmpty()) {
-                    CompoundTag nbt = new CompoundTag();
-                    nbt.put("tedata", te_nbt);
-                    stack.set(DataComponents.CUSTOM_DATA, CustomData.of(nbt));
-                }
-                stacks.add(stack);
-            } else {
-                for(ItemStack stack: ((HopperTileEntity)te).main_inventory_) {
-                    if(!stack.isEmpty()) stacks.add(stack);
-                }
-                ((HopperTileEntity)te).reset_rtstate();
-            }
+            if(!(te instanceof HopperTileEntity hopper)) return stacks;
+            stacks.add(createHopperItemWithData(hopper));
             return stacks;
         }
+
+        @Override
+        protected void onExplosionHit(BlockState state, Level world, BlockPos pos, Explosion explosion, BiConsumer<ItemStack, BlockPos> dropConsumer) {
+            BlockEntity be = world.getBlockEntity(pos);
+            if (be instanceof  HopperTileEntity hopper && !world.isClientSide()) {
+                hopper.exploded = true;
+            }
+            super.onExplosionHit(state, world, pos, explosion, dropConsumer);
+        }
+
+        @Override
+        public BlockState playerWillDestroy(Level world, BlockPos pos, BlockState state, Player player) {
+            if (!world.isClientSide) {
+                BlockEntity be = world.getBlockEntity(pos);
+                if (be instanceof EdHopper.HopperTileEntity hopper) {
+                    hopper.destroyedByCreative = player.isCreative();
+                }
+            }
+            super.playerWillDestroy(world, pos, state, player);
+            return state;
+        }
+
+
+
+        @Override
+        public void onRemove(BlockState state, Level world, BlockPos pos, BlockState newState, boolean isMoving) {
+            if (!world.isClientSide && !isMoving && state.getBlock() != newState.getBlock()) {
+                BlockEntity be = world.getBlockEntity(pos);
+                if (be instanceof EdHopper.HopperTileEntity hopper) {
+                    if(!hopper.destroyedByCreative){
+                        if (!hopper.exploded){
+                            // 生成带完整 NBT 的漏斗物品（内部物品和设置均保留），同时清空内部库存
+                            ItemStack hopperStack = createHopperItemWithData(hopper);
+                            Block.popResource(world, pos, hopperStack);   // 安全生成 ItemEntity
+                        }
+                        // 库存已清空，避免 NeoForge 能力系统再次掉落\
+                    }
+                    hopper.main_inventory_.clearContent();
+                    hopper.setChanged();
+                }
+
+            }
+            super.onRemove(state, world, pos, newState, isMoving);
+        }
+
         @Nonnull
         @Override
-        public InteractionResult useWithoutItem(BlockState state, Level world, BlockPos pos,
-                                                Player player, BlockHitResult hit)
-        {
-            return useOpenGui(state, world, pos, player); }
+        public InteractionResult useWithoutItem(BlockState state, Level world, BlockPos pos, Player player, BlockHitResult hit) {
+            return useOpenGui(state, world, pos, player);
+        }
 
         @Override
         @SuppressWarnings("deprecation")
@@ -181,7 +217,7 @@ public class EdHopper
     }
 
     //--------------------------------------------------------------------------------------------------------------------
-    // Tile entity
+    // 方块实体
     //--------------------------------------------------------------------------------------------------------------------
 
     public static class HopperTileEntity extends StandardEntityBlocks.StandardBlockEntity implements MenuProvider, Nameable
@@ -200,6 +236,9 @@ public class EdHopper
         public static final int LOGIC_CONTINUOUS   = 0x02;
         public static final int LOGIC_IGNORE_EXT   = 0x04;
         ///
+        public boolean exploded = false;
+        public boolean destroyedByCreative = false;
+        ///
         private boolean block_power_signal_ = false;
         private boolean block_power_updated_ = false;
         private int collection_timer_ = 0;
@@ -212,7 +251,7 @@ public class EdHopper
         private int tick_timer_ = 0;
         protected final Inventories.StorageInventory main_inventory_ = new Inventories.StorageInventory(this, NUM_OF_SLOTS, 1);
         protected final Inventories.InventoryRange storage_slot_range_ = new Inventories.InventoryRange(main_inventory_, 0, NUM_OF_STORAGE_SLOTS);
-        protected final IItemHandler item_handler_ = new HopperItemHandler();
+        public final IItemHandler item_handler_ = new HopperItemHandler();
 
         public HopperTileEntity(BlockPos pos, BlockState state)
         {
@@ -232,7 +271,7 @@ public class EdHopper
             block_power_signal_ = false;
             writenbt(nbt, false);
             boolean is_empty = main_inventory_.isEmpty();
-            main_inventory_.clearContent();
+            main_inventory_.clearContent(); // 清空库存
             reset_rtstate();
             block_power_updated_ = false;
             if(is_empty) nbt = new CompoundTag();
@@ -272,8 +311,8 @@ public class EdHopper
         // BlockEntity --------------------------------------------------------------------------------------------
 
         @Override
-        public void load(CompoundTag nbt, net.minecraft.core.HolderLookup.Provider provider) {
-            super.load(nbt, provider);
+        public void loadAdditional(CompoundTag nbt, net.minecraft.core.HolderLookup.Provider provider) {
+            super.loadAdditional(nbt, provider);
             readnbt(nbt, false);
         }
 
@@ -349,7 +388,7 @@ public class EdHopper
             }
         };
 
-        // Item Handler --------------------------------------------------------------------------------------------
+        // 物品处理器 --------------------------------------------------------------------------------------------
 
         private class HopperItemHandler implements IItemHandler
         {
@@ -405,14 +444,17 @@ public class EdHopper
             { return true; }
         }
 
-        // ITickable and aux methods ---------------------------------------------------------------------
+        // ITickable 及辅助方法 ---------------------------------------------------------------------
 
         private IItemHandler inventory_entity_handler(BlockPos where)
         {
-            final List<Entity> entities = level.getEntities((Entity)null, (new AABB(where)), EntitySelector.ENTITY_STILL_ALIVE);
-            if (entities.isEmpty()) return null;
-            Entity entity = entities.get(0);
-            return entity.getCapability(Capabilities.ItemHandler.ENTITY);
+            final List<Entity> entities = level.getEntities((Entity)null, new AABB(where), EntitySelector.ENTITY_STILL_ALIVE);
+            for (Entity entity : entities) {
+                if (entity instanceof Player) continue;  // 跳过玩家
+                IItemHandler handler = entity.getCapability(Capabilities.ItemHandler.ENTITY);
+                if (handler != null) return handler;
+            }
+            return null;
         }
 
         private static int next_slot(int i)
@@ -463,36 +505,36 @@ public class EdHopper
             }
             final BlockPos facing_pos = worldPosition.relative(facing);
             IItemHandler ih = null;
-            // Tile entity insertion check
+            // 方块实体插入检查
             {
                 ih = level.getCapability(Capabilities.ItemHandler.BLOCK, facing_pos, facing.getOpposite());
                 if(ih == null) { delay_timer_ = TICK_INTERVAL+2; return false; }
                 final BlockState target_state = level.getBlockState(facing_pos);
                 if(target_state.getBlock() instanceof net.minecraft.world.level.block.HopperBlock) {
                     Direction f = target_state.getValue(net.minecraft.world.level.block.HopperBlock.FACING);
-                    if(f==facing.getOpposite()) return false; // no back transfer
+                    if(f==facing.getOpposite()) return false; // 无反向传输
                 } else if(target_state.getBlock() instanceof EdHopper.HopperBlock) {
                     Direction f = target_state.getValue(EdHopper.HopperBlock.FACING);
                     if(f==facing.getOpposite()) return false;
                 }
             }
-            // Entity insertion check
+            // 实体插入检查
             if(ih == null) ih = inventory_entity_handler(facing_pos);
             if(ih == null) { delay_timer_ = TICK_INTERVAL+2; return false; }
-            // Handler insertion
+            // 处理器插入
             {
                 ItemStack insert_stack = current_stack.copy();
                 if(insert_stack.getCount() > transfer_count_) insert_stack.setCount(transfer_count_);
                 final int initial_insert_stack_size = insert_stack.getCount();
                 if((ih == null) || ih.getSlots() <= 0) return false;
-                // First stack completion insert run
+                // 首先尝试补满已存在物品的槽位
                 for(int i=0; i<ih.getSlots(); ++i) {
                     final ItemStack target_stack = ih.getStackInSlot(i);
                     if(Inventories.areItemStacksDifferent(target_stack, insert_stack)) continue;
                     insert_stack = ih.insertItem(i, insert_stack.copy(), false);
                     if(insert_stack.isEmpty()) break;
                 }
-                // First-available insert run
+                // 然后尝试插入首个可用槽位
                 if(!insert_stack.isEmpty()) {
                     for(int i=0; i<ih.getSlots(); ++i) {
                         insert_stack = ih.insertItem(i, insert_stack.copy(), false);
@@ -636,7 +678,7 @@ public class EdHopper
     }
 
     //--------------------------------------------------------------------------------------------------------------------
-    // Container
+    // 容器
     //--------------------------------------------------------------------------------------------------------------------
 
     public static class HopperContainer extends AbstractContainerMenu implements Networking.INetworkSynchronisableContainer
@@ -719,21 +761,21 @@ public class EdHopper
 
         @OnlyIn(Dist.CLIENT)
         public void onGuiAction(CompoundTag nbt)
-        { Networking.PacketContainerSyncClientToServer.sendToServer(containerId, nbt); }
+        { EdNetworking.sendContainerSync(containerId, nbt);; }
 
         @OnlyIn(Dist.CLIENT)
         public void onGuiAction(String key, int value)
         {
             CompoundTag nbt = new CompoundTag();
             nbt.putInt(key, value);
-            Networking.PacketContainerSyncClientToServer.sendToServer(containerId, nbt);
+            EdNetworking.sendContainerSync(containerId, nbt);;
         }
 
         @OnlyIn(Dist.CLIENT)
         public void onGuiAction(String message, CompoundTag nbt)
         {
             nbt.putString("action", message);
-            Networking.PacketContainerSyncClientToServer.sendToServer(containerId, nbt);
+            EdNetworking.sendContainerSync(containerId, nbt);
         }
 
         @Override
@@ -808,7 +850,7 @@ public class EdHopper
             final int x0=getGuiLeft(), y0=getGuiTop(), w=getXSize(), h=getYSize();
             final ResourceLocation bg = this.background_image_;
             HopperContainer container = getMenu();
-            // active slot
+            // 当前活跃槽位
             {
                 int slot_index = container.field(6);
                 if((slot_index < 0) || (slot_index >= HopperTileEntity.NUM_OF_SLOTS)) slot_index = 0;
@@ -816,7 +858,7 @@ public class EdHopper
                 int y = (y0+8+((slot_index / 6) * 17));
                 graphics.blit(bg, x, y, 200, 8, 18, 18);
             }
-            // collection range
+            // 收集范围
             {
                 int[] lut = { 133, 141, 149, 157, 166 };
                 int px = lut[Mth.clamp(container.field(0), 0, HopperTileEntity.MAX_COLLECTION_RANGE)];
@@ -824,26 +866,26 @@ public class EdHopper
                 int y = y0 + 14;
                 graphics.blit(bg, x, y, 179, 40, 5, 5);
             }
-            // transfer period
+            // 传输周期
             {
                 int px = (int)Math.round(((33.5 * container.field(3)) / 100) + 1);
                 int x = x0 + 132 - 2 + Mth.clamp(px, 0, 34);
                 int y = y0 + 27;
                 graphics.blit(bg, x, y, 179, 40, 5, 5);
             }
-            // transfer count
+            // 传输数量
             {
                 int x = x0 + 133 - 2 + (container.field(1));
                 int y = y0 + 40;
                 graphics.blit(bg, x, y, 179, 40, 5, 5);
             }
-            // redstone input
+            // 红石输入
             {
                 if(container.field(5) != 0) {
                     graphics.blit(bg, x0+133, y0+49, 217, 49, 9, 9);
                 }
             }
-            // trigger logic
+            // 触发逻辑
             {
                 int inverter_offset_x = ((container.field(2) & HopperTileEntity.LOGIC_INVERTED) != 0) ? 11 : 0;
                 int inverter_offset_y = ((container.field(2) & HopperTileEntity.LOGIC_IGNORE_EXT) != 0) ? 10 : 0;
@@ -851,7 +893,7 @@ public class EdHopper
                 int pulse_mode_offset  = ((container.field(2) & HopperTileEntity.LOGIC_CONTINUOUS    ) != 0) ? 9 : 0;
                 graphics.blit(bg, x0+159, y0+49, 199+pulse_mode_offset, 49, 9, 9);
             }
-            // delay timer running indicator
+            // 延迟计时器运行指示器
             {
                 if((container.field(4) > HopperTileEntity.PERIOD_OFFSET) && ((System.currentTimeMillis() % 1000) < 500)) {
                     graphics.blit(bg, x0+148, y0+22, 187, 22, 3, 3);
@@ -873,48 +915,63 @@ public class EdHopper
         }
 
         @Override
+        protected boolean isHovering(int x, int y, int width, int height, double mouseX, double mouseY) {
+            int i = getGuiLeft();   // 替代 this.leftPos
+            int j = getGuiTop();    // 替代 this.topPos
+            mouseX -= i;
+            mouseY -= j;
+            return mouseX >= (x - 1) && mouseX < (x + width + 1) && mouseY >= (y - 1) && mouseY < (y + height + 1);
+        }
+
+        @Override
         public boolean mouseClicked(double mouseX, double mouseY, int mouseButton)
         {
             tooltip_.resetTimer();
             HopperContainer container = getMenu();
-            int mx = (int)(mouseX - getGuiLeft() + .5), my = (int)(mouseY - getGuiTop() + .5);
+            int mx = (int)(mouseX - getGuiLeft() + .5);
+            int my = (int)(mouseY - getGuiTop() + .5);
             if((!isHovering(126, 1, 49, 60, mouseX, mouseY))) {
                 return super.mouseClicked(mouseX, mouseY, mouseButton);
-            } else if(isHovering(128, 9, 44, 10, mouseX, mouseY)) {
+            }
+            else if(isHovering(128, 9, 44, 10, mouseX, mouseY)) {
                 int range = (mx-133);
                 if(range < -1) {
-                    range = container.field(0) - 1; // -
+                    range = container.field(0) - 1; // 减小
                 } else if(range >= 34) {
-                    range = container.field(0) + 1; // +
+                    range = container.field(0) + 1; // 增大
                 } else {
                     range = (int)(0.5 + ((((double)HopperTileEntity.MAX_COLLECTION_RANGE) * range)/34));
                     range = Mth.clamp(range, 0, HopperTileEntity.MAX_COLLECTION_RANGE);
                 }
                 container.onGuiAction("range", range);
-            } else if(isHovering(128, 21, 44, 10, mouseX, mouseY)) {
+            }
+            else if(isHovering(128, 21, 44, 10, mouseX, mouseY)) {
                 int period = (mx-133);
                 if(period < -1) {
-                    period = container.field(3) - 3; // -
+                    period = container.field(3) - 3; // 减小
                 } else if(period >= 35) {
-                    period = container.field(3) + 3; // +
+                    period = container.field(3) + 3; // 增大
                 } else {
                     period = (int)(0.5 + ((100.0 * period)/34));
                 }
                 period = Mth.clamp(period, 0, 100);
                 container.onGuiAction("period", period);
-            } else if(isHovering(128, 34, 44, 10, mouseX, mouseY)) {
+            }
+            else if(isHovering(128, 34, 44, 10, mouseX, mouseY)) {
                 int ndrop = (mx-134);
                 if(ndrop < -1) {
-                    ndrop = container.field(1) - 1; // -
+                    ndrop = container.field(1) - 1; // 减小
                 } else if(ndrop >= 34) {
-                    ndrop = container.field(1) + 1; // +
+                    ndrop = container.field(1) + 1; // 增大
                 } else {
                     ndrop = Mth.clamp(1+ndrop, 1, HopperTileEntity.MAX_TRANSFER_COUNT);
                 }
                 container.onGuiAction("xsize", ndrop);
-            } else if(isHovering(133, 49, 9, 9, mouseX, mouseY)) {
+            }
+            else if(isHovering(133, 49, 9, 9, mouseX, mouseY)) {
                 container.onGuiAction("manual_trigger", 1);
-            } else if(isHovering(145, 49, 9, 9, mouseX, mouseY)) {
+            }
+            else if(isHovering(145, 49, 9, 9, mouseX, mouseY)) {
                 final int mask = (HopperTileEntity.LOGIC_INVERTED|HopperTileEntity.LOGIC_IGNORE_EXT|HopperTileEntity.LOGIC_NOT_INVERTED);
                 final int logic = switch (container.field(2) & mask) {
                     case HopperTileEntity.LOGIC_NOT_INVERTED -> HopperTileEntity.LOGIC_INVERTED;
@@ -923,7 +980,8 @@ public class EdHopper
                     default -> HopperTileEntity.LOGIC_IGNORE_EXT;
                 };
                 container.onGuiAction("logic", (container.field(2) & (~mask)) | logic);
-            } else if(isHovering(159, 49, 7, 9, mouseX, mouseY)) {
+            }
+            else if(isHovering(159, 49, 7, 9, mouseX, mouseY)) {
                 container.onGuiAction("logic", container.field(2) ^ HopperTileEntity.LOGIC_CONTINUOUS);
             }
             return true;

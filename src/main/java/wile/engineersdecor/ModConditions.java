@@ -10,7 +10,7 @@ import wile.engineersdecor.libmc.OptionalRecipeCondition;
 import java.util.function.Supplier;
 
 public class ModConditions {
-    // Используем ключ из NeoForgeRegistries.Keys
+    // 使用来自 NeoForgeRegistries.Keys 的键
     public static final DeferredRegister<MapCodec<? extends ICondition>> CONDITIONS =
             DeferredRegister.create(NeoForgeRegistries.Keys.CONDITION_CODECS, "engineersdecor");
 

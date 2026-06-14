@@ -10,6 +10,7 @@ import net.neoforged.fml.config.ModConfig;
 import net.neoforged.fml.event.config.ModConfigEvent;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.client.event.RenderGuiLayerEvent;
 import net.neoforged.neoforge.client.event.RenderLevelStageEvent;
@@ -26,10 +27,7 @@ import com.mojang.logging.LogUtils;
 import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 
 import wile.engineersdecor.blocks.EdLadderBlock;
-import wile.engineersdecor.libmc.Auxiliaries;
-import wile.engineersdecor.libmc.OptionalRecipeCondition;
-import wile.engineersdecor.libmc.Overlay;
-import wile.engineersdecor.libmc.EDRegistries;
+import wile.engineersdecor.libmc.*;
 
 import java.util.function.Supplier;
 
@@ -39,7 +37,7 @@ public class ModEngineersDecor {
     public static final String MODNAME = "Engineer's Decor";
     private static final Logger LOGGER = LogUtils.getLogger();
 
-    // Регистрация условий рецептов
+    // 注册配方条件
     private static final DeferredRegister<MapCodec<? extends ICondition>> CONDITION_CODECS =
             DeferredRegister.create(NeoForgeRegistries.Keys.CONDITION_CODECS, MODID);
     private static final Supplier<MapCodec<? extends ICondition>> OPTIONAL_RECIPE_CONDITION =
@@ -49,29 +47,30 @@ public class ModEngineersDecor {
         Auxiliaries.init(MODID, LOGGER, wile.engineersdecor.ModConfig::getServerConfig);
         Auxiliaries.logGitVersion(MODNAME);
 
-        // Регистрация контента
+        // 注册内容
         EDRegistries.init(MODID, "sign_decor", (reg) -> reg.register(modEventBus));
         ModContent.init(MODID);
         OptionalRecipeCondition.init(MODID, LOGGER);
 
-        // Конфиги
+        // 配置
         container.registerConfig(ModConfig.Type.SERVER, wile.engineersdecor.ModConfig.SERVER_CONFIG_SPEC);
         container.registerConfig(ModConfig.Type.COMMON, wile.engineersdecor.ModConfig.COMMON_CONFIG_SPEC);
 
-        // Регистрация кодеков условий
+        // 注册条件编解码器
         CONDITION_CODECS.register(modEventBus);
         ModConditions.register(modEventBus);
 
-        // Слушатели инициализации
+        // 初始化监听器
         modEventBus.addListener(this::onSetup);
         modEventBus.addListener(this::onClientSetup);
         modEventBus.addListener(EDRegistries::addCreative);
 
-        // ✅ Правильная регистрация слушателей конфигов
+        // ✅ 正确注册配置监听器
+        modEventBus.addListener(EdCapabilities::registerCapabilities);
         modEventBus.addListener(this::onConfigLoad);
         modEventBus.addListener(this::onConfigReload);
 
-        // ✅ Регистрируем только игровые события на общей шине
+        // ✅ 仅在总线上注册游戏事件
         NeoForge.EVENT_BUS.register(this);
         NeoForge.EVENT_BUS.register(ClientEvents.class);
     }
@@ -94,7 +93,7 @@ public class ModEngineersDecor {
         ModContent.processContentClientSide(event);
     }
 
-    // ✅ Эти методы теперь слушаются через modEventBus (не через @SubscribeEvent)
+    // ✅ 这些方法现在通过 modEventBus 监听（不使用 @SubscribeEvent）
     private void onConfigLoad(final ModConfigEvent.Loading event) {
         wile.engineersdecor.ModConfig.apply();
     }
@@ -108,16 +107,16 @@ public class ModEngineersDecor {
         }
     }
 
-    // Игровые события
+    // 游戏事件
     @SubscribeEvent
-    public void onPlayerEvent(final PlayerTickEvent.Post event) {  // Или .Pre, если нужно начало тика
-        Player player = event.getEntity();  // Получаем игрока напрямую
+    public void onPlayerEvent(final PlayerTickEvent.Post event) {  // 或 .Pre，如果需要 tick 开始
+        Player player = event.getEntity();  // 直接获取玩家
         if (player.onClimbable()) {
             EdLadderBlock.onPlayerUpdateEvent(player);
         }
     }
 
-    // Клиентские события
+    // 客户端事件
     public static class ClientEvents {
         @SubscribeEvent
         public static void onRenderGui(RenderGuiLayerEvent.Post event) {

@@ -1,9 +1,9 @@
 /*
- * @file Guis.java
- * @author Stefan Wilhelm (wile)
- * @license MIT (https://opensource.org/licenses/MIT)
+ * @文件 Guis.java
+ * @作者 Stefan Wilhelm (wile)
+ * @许可 MIT (https://opensource.org/licenses/MIT)
  *
- * Gui Wrappers and Widgets.
+ * GUI 包装器和组件。
  */
 
 package wile.engineersdecor.libmc;
@@ -36,7 +36,7 @@ import java.util.function.Function;
 public class Guis
 {
     // -------------------------------------------------------------------------------------------------------------------
-    // Gui base
+    // GUI 基类
     // -------------------------------------------------------------------------------------------------------------------
 
     public static abstract class ContainerGui<T extends AbstractContainerMenu> extends AbstractContainerScreen<T>
@@ -105,7 +105,7 @@ public class Guis
     }
 
     // -------------------------------------------------------------------------------------------------------------------
-    // Gui elements
+    // GUI 元素
     // -------------------------------------------------------------------------------------------------------------------
 
     @OnlyIn(Dist.CLIENT)

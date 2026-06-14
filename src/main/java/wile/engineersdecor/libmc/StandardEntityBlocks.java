@@ -1,6 +1,7 @@
 package wile.engineersdecor.libmc;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.server.level.ServerLevel;
@@ -94,10 +95,17 @@ public class StandardEntityBlocks
         // -------------------------------------------------------------------------------------------------
         // ✅ NeoForge capability bridge (внутри класса!)
         // -------------------------------------------------------------------------------------------------
-        public <T> Optional<T> getCapability(BlockCapability<T, net.minecraft.core.Direction> capability,
-                                             @Nullable net.minecraft.core.Direction facing)
-        {
-            return Optional.empty();
+        // 重写 BlockEntity 中的 getCapability（返回 T，可空）
+        //@Override
+        /*@Nullable
+        public <T> T getCapability(BlockCapability<T, Direction> capability, @Nullable Direction side) {
+            return provideCapability(capability, side).orElse(null);
         }
+
+        // 留给子类的钩子（返回 Optional，方便处理）
+        protected <T> Optional<T> provideCapability(BlockCapability<T, Direction> capability, @Nullable Direction side) {
+            return Optional.empty();
+        }*/
+
     }
 }

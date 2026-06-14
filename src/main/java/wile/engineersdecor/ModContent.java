@@ -1,18 +1,17 @@
 /*
- * @file ModContent.java
- * @author Stefan Wilhelm (wile)
- * @copyright (C) 2020 Stefan Wilhelm
- * @license MIT (see https://opensource.org/licenses/MIT)
+ * @文件 ModContent.java
+ * @作者 Stefan Wilhelm (wile)
+ * @版权 (C) 2020 Stefan Wilhelm
+ * @许可证 MIT (见 https://opensource.org/licenses/MIT)
  *
- * Definition and initialisation of blocks of this
- * module, along with their tile entities if applicable.
+ * 本模块的方块定义和初始化，
+ * 以及相关的方块实体（如适用）。
  *
- * Note: Straight forward definition of different blocks/entities
- *       to make recipes, models and texture definitions easier.
+ * 注意：直接定义不同的方块/实体，
+ *       以便更轻松地制作配方、模型和纹理定义。
  */
 package wile.engineersdecor;
 
-import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.renderer.entity.EntityRenderers;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -422,13 +421,13 @@ public class ModContent
                 StandardBlocks.CFG_CUTOUT|StandardBlocks.CFG_FACING_PLACEMENT|StandardBlocks.CFG_FLIP_PLACEMENT_IF_SAME,
                 BlockBehaviour.Properties.ofFullCopy(Blocks.OAK_WOOD).mapColor(Blocks.OAK_WOOD.defaultMapColor()).strength(0.5f, 5f).sound(SoundType.WOOD).noOcclusion(),
                 Auxiliaries.getPixeledAABB(5.8,5.8,0, 10.2,10.2,16),
-                (EdStraightPoleBlock)EDRegistries.getBlock("treated_wood_pole") // TREATED_WOOD_POLE
+                (EdStraightPoleBlock)EDRegistries.getBlock("treated_wood_pole") // 处理过的木杆
         ));
         EDRegistries.addBlock("treated_wood_pole_support", ()->new EdStraightPoleBlock(
                 StandardBlocks.CFG_CUTOUT|StandardBlocks.CFG_FACING_PLACEMENT|StandardBlocks.CFG_FLIP_PLACEMENT_IF_SAME,
                 BlockBehaviour.Properties.ofFullCopy(Blocks.OAK_WOOD).mapColor(Blocks.OAK_WOOD.defaultMapColor()).strength(0.5f, 5f).sound(SoundType.WOOD).noOcclusion(),
                 Auxiliaries.getPixeledAABB(5.8,5.8,0, 10.2,10.2,16),
-                (EdStraightPoleBlock)EDRegistries.getBlock("treated_wood_pole") // TREATED_WOOD_POLE
+                (EdStraightPoleBlock)EDRegistries.getBlock("treated_wood_pole") // 处理过的木杆
         ));
         EDRegistries.addBlock("thin_steel_pole", ()->new EdStraightPoleBlock(
                 StandardBlocks.CFG_CUTOUT|StandardBlocks.CFG_FACING_PLACEMENT,
@@ -440,7 +439,7 @@ public class ModContent
                 StandardBlocks.CFG_CUTOUT|StandardBlocks.CFG_FACING_PLACEMENT|StandardBlocks.CFG_FLIP_PLACEMENT_IF_SAME,
                 BlockBehaviour.Properties.ofFullCopy(Blocks.IRON_BLOCK).mapColor(Blocks.IRON_BLOCK.defaultMapColor()).strength(0.5f, 11f).sound(SoundType.METAL).noOcclusion(),
                 Auxiliaries.getPixeledAABB(6,6,0, 10,10,16),
-                (EdStraightPoleBlock)EDRegistries.getBlock("thin_steel_pole") // THIN_STEEL_POLE
+                (EdStraightPoleBlock)EDRegistries.getBlock("thin_steel_pole") // 细钢杆
         ));
         EDRegistries.addBlock("thick_steel_pole", ()->new EdStraightPoleBlock(
                 StandardBlocks.CFG_CUTOUT|StandardBlocks.CFG_FACING_PLACEMENT,
@@ -457,10 +456,10 @@ public class ModContent
         EDRegistries.addBlock("steel_double_t_support", ()->new EdHorizontalSupportBlock(
                 StandardBlocks.CFG_CUTOUT|StandardBlocks.CFG_HORIZIONTAL|StandardBlocks.CFG_LOOK_PLACEMENT,
                 BlockBehaviour.Properties.ofFullCopy(Blocks.IRON_BLOCK).mapColor(Blocks.IRON_BLOCK.defaultMapColor()).strength(0.5f, 11f).sound(SoundType.METAL).noOcclusion(),
-                Auxiliaries.getPixeledAABB( 5,11,0, 11,16,16), // main beam
-                Auxiliaries.getPixeledAABB(10,11,5, 16,16,11), // east beam (also for west 180deg)
-                Auxiliaries.getPixeledAABB( 6, 0,6, 10,16,10), // down thin
-                Auxiliaries.getPixeledAABB( 5, 0,5, 11,16,11)  // down thick
+                Auxiliaries.getPixeledAABB( 5,11,0, 11,16,16), // 主梁
+                Auxiliaries.getPixeledAABB(10,11,5, 16,16,11), // 东侧梁 (也用于西侧180度)
+                Auxiliaries.getPixeledAABB( 6, 0,6, 10,16,10), // 下方细杆
+                Auxiliaries.getPixeledAABB( 5, 0,5, 11,16,11)  // 下方粗杆
         ));
 
         // -------------------------------------------------------------------------------------------------------------------
@@ -492,16 +491,16 @@ public class ModContent
                 StandardBlocks.CFG_CUTOUT,
                 BlockBehaviour.Properties.ofFullCopy(Blocks.IRON_BLOCK).mapColor(Blocks.IRON_BLOCK.defaultMapColor()).strength(0.3f, 10f).sound(SoundType.METAL).noOcclusion(),
                 new VoxelShape[]{
-                        Shapes.create(Auxiliaries.getPixeledAABB(0,14,0, 16, 16,16)), // only base
-                        Auxiliaries.getUnionShape( // base with thick pole
+                        Shapes.create(Auxiliaries.getPixeledAABB(0,14,0, 16, 16,16)), // 仅底座
+                        Auxiliaries.getUnionShape( // 带粗杆的底座
                                 Auxiliaries.getPixeledAABB(0,14,0, 16, 16,16),
                                 Auxiliaries.getPixeledAABB(5, 0,5, 11,15, 11)
                         ),
-                        Auxiliaries.getUnionShape( // base with thin pole
+                        Auxiliaries.getUnionShape( // 带细杆的底座
                                 Auxiliaries.getPixeledAABB(0,14,0, 16, 16,16),
                                 Auxiliaries.getPixeledAABB(6, 0,6, 10,15, 10)
                         ),
-                        Auxiliaries.getUnionShape( // structure frame-like
+                        Auxiliaries.getUnionShape( // 结构框架式
                                 Auxiliaries.getPixeledAABB( 0, 0, 0, 16,  2,16),
                                 Auxiliaries.getPixeledAABB( 0,14, 0, 16, 16,16),
                                 Auxiliaries.getPixeledAABB( 0, 0, 0,  1, 16, 1),
@@ -509,7 +508,7 @@ public class ModContent
                                 Auxiliaries.getPixeledAABB(15, 0,15, 16, 16,16),
                                 Auxiliaries.getPixeledAABB( 0, 0,15,  1, 16,16)
                         ),
-                        Auxiliaries.getUnionShape( // base with inset light
+                        Auxiliaries.getUnionShape( // 带嵌入式灯的底座
                                 Auxiliaries.getPixeledAABB( 0,14,0, 16,16,16)
                         )
                 },
@@ -518,11 +517,11 @@ public class ModContent
         EDRegistries.addBlock("steel_catwalk_stairs", ()->new EdCatwalkStairsBlock(
                 StandardBlocks.CFG_CUTOUT,
                 BlockBehaviour.Properties.ofFullCopy(Blocks.IRON_BLOCK).mapColor(Blocks.IRON_BLOCK.defaultMapColor()).strength(0.3f, 10f).sound(SoundType.METAL).noOcclusion(),
-                new AABB[] { // base
+                new AABB[] { // 底座
                         Auxiliaries.getPixeledAABB( 1, 2, 8, 15,  4,  16),
                         Auxiliaries.getPixeledAABB( 1,10, 0, 15, 12,   8),
                 },
-                new AABB[] { // railing left
+                new AABB[] { // 左侧栏杆
                         Auxiliaries.getPixeledAABB(0.4,  0, 15, 0.6, 15, 16),
                         Auxiliaries.getPixeledAABB(0.4,  1, 14, 0.6, 16, 15),
                         Auxiliaries.getPixeledAABB(0.4,  2, 13, 0.6, 17, 14),
@@ -613,7 +612,7 @@ public class ModContent
         // -------------------------------------------------------------------------------------------------------------------
 
 
-        /*EDRegistries.addBlock("factory_hopper",
+        EDRegistries.addBlock("factory_hopper",
                 ()->new EdHopper.HopperBlock(
                         StandardBlocks.CFG_CUTOUT|StandardBlocks.CFG_FACING_PLACEMENT|StandardBlocks.CFG_OPPOSITE_PLACEMENT,
                         BlockBehaviour.Properties.ofFullCopy(Blocks.IRON_BLOCK).mapColor(Blocks.IRON_BLOCK.defaultMapColor()).strength(0.3f, 12f).sound(SoundType.METAL).noOcclusion(),()->{
@@ -663,19 +662,25 @@ public class ModContent
                 EdHopper.HopperContainer::new
         );
 
-        // -------------------------------------------------------------------------------------------------------------------
-
-        EDRegistries.addBlock("test_block",
-                ()->new EdTestBlock.TestBlock(
-                        StandardBlocks.CFG_LOOK_PLACEMENT,
-                        BlockBehaviour.Properties.ofFullCopy(Blocks.IRON_BLOCK).mapColor(Blocks.IRON_BLOCK.defaultMapColor()).strength(0f, 32000f).sound(SoundType.METAL),
-                        Auxiliaries.getPixeledAABB(0,0,0, 16,16,16)
+        EDRegistries.addBlock("factory_placer",
+                ()->new EdPlacer.PlacerBlock(
+                        StandardBlocks.CFG_CUTOUT|StandardBlocks.CFG_LOOK_PLACEMENT|StandardBlocks.CFG_FLIP_PLACEMENT_SHIFTCLICK|StandardBlocks.CFG_OPPOSITE_PLACEMENT,
+                        BlockBehaviour.Properties.ofFullCopy(Blocks.IRON_BLOCK).mapColor(Blocks.IRON_BLOCK.defaultMapColor()).strength(0.3f, 12f).sound(SoundType.METAL).noOcclusion(),
+                        new AABB[]{
+                                Auxiliaries.getPixeledAABB(0,0,2, 16,16,16),
+                                Auxiliaries.getPixeledAABB( 0,0,0, 1,16, 2),
+                                Auxiliaries.getPixeledAABB(15,0,0,16,16, 2)
+                        }
                 ),
-                EdTestBlock.TestTileEntity::new
-        );*/
-        // Cycad plant block from Alex's Caves (ported)
+                EdPlacer.PlacerTileEntity::new,
+                EdPlacer.PlacerContainer::new
+        );
+
+
+        // -------------------------------------------------------------------------------------------------------------------
+        // 来自 Alex's Caves 的 Cycad 植物方块（移植）
         EDRegistries.addBlock("cycad", () -> new CycadBlock());
-        // Cycad в цветочном горшке (как в Alex's Caves)
+        // 花盆中的 Cycad（如 Alex's Caves 中）
         EDRegistries.addBlockNoItem("potted_cycad", () ->
                 new FlowerPotBlock(
                         () -> (FlowerPotBlock) Blocks.FLOWER_POT,
@@ -703,13 +708,13 @@ public class ModContent
                         .noSave()
                         .setShouldReceiveVelocityUpdates(false)
                         .setUpdateInterval(4)
-                        // .setCustomClientFactory(...)  <-- УДАЛЕНО
+                        // .setCustomClientFactory(...)  <-- 已删除
                         .build(ResourceLocation.fromNamespaceAndPath(Auxiliaries.modid(), "et_chair").toString())
         );
     }
 
     //--------------------------------------------------------------------------------------------------------------------
-    // Registry wrappers
+    // 注册表包装器
     //--------------------------------------------------------------------------------------------------------------------
 
     public static Block getBlock(String name)
@@ -745,17 +750,17 @@ public class ModContent
     { return EDRegistries.getRegisteredItems(); }
 
     //--------------------------------------------------------------------------------------------------------------------
-    // Initialisation events
+    // 初始化事件
     //--------------------------------------------------------------------------------------------------------------------
 
     @OnlyIn(Dist.CLIENT)
     @SuppressWarnings("unchecked")
     public static void registerMenuGuis(final FMLClientSetupEvent event)
     {
-        // ⚠️ ВНИМАНИЕ ⚠️
-        // В NeoForge 1.21.1 метод MenuScreens.register() стал private.
-        // Регистрация экранов теперь производится через событие RegisterMenuScreensEvent.
-        // См. новый файл EdScreens.java (пример ниже).
+        // ⚠️ 注意 ⚠️
+        // 在 NeoForge 1.21.1 中，MenuScreens.register() 方法已变为私有。
+        // 屏幕注册现在通过 RegisterMenuScreensEvent 事件进行。
+        // 参见新文件 EdScreens.java（示例如下）。
 
     /*
     MenuScreens.register((MenuType<EdHopper.HopperContainer>)EDRegistries.getMenuTypeOfBlock("factory_hopper"), EdHopper.HopperGui::new);
@@ -772,8 +777,8 @@ public class ModContent
     @OnlyIn(Dist.CLIENT)
     public static void processContentClientSide(final FMLClientSetupEvent event)
     {
-        // Block renderer selection
-        // Disabled in Forge, model based {"render_type": "cutout"/"translucent"}
+        // 方块渲染器选择
+        // 在 Forge 中已禁用，基于模型 {"render_type": "cutout"/"translucent"}
         //  for(Block block: Registries.getRegisteredBlocks()) {
         //    if(block instanceof IStandardBlock) {
         //      switch(((IStandardBlock)block).getRenderTypeHint()) {
@@ -785,7 +790,7 @@ public class ModContent
         //      }
         //    }
         //  }
-        // Entity renderers
+        // 实体渲染器
         EntityRenderers.register(EDRegistries.getEntityType("et_chair"), ModRenderers.InvisibleEntityRenderer::new);
     }
 

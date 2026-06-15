@@ -676,6 +676,15 @@ public class ModContent
                 EdPlacer.PlacerContainer::new
         );
 
+        EDRegistries.addBlock("small_freezer",
+                ()->new EdFreezer.FreezerBlock(
+                        StandardBlocks.CFG_CUTOUT|StandardBlocks.CFG_HORIZIONTAL|StandardBlocks.CFG_LOOK_PLACEMENT,
+                        BlockBehaviour.Properties.ofFullCopy(Blocks.IRON_BLOCK).mapColor(Blocks.IRON_BLOCK.defaultMapColor()).strength(0.3f, 12f).sound(SoundType.METAL).noOcclusion(),
+                        Auxiliaries.getPixeledAABB(1.1,0,1.1, 14.9,16,14.9)
+                ),
+                EdFreezer.FreezerTileEntity::new
+        );
+
 
         // -------------------------------------------------------------------------------------------------------------------
         // 来自 Alex's Caves 的 Cycad 植物方块（移植）

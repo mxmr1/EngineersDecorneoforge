@@ -7,6 +7,7 @@ import net.minecraft.world.level.block.Block;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
+import wile.engineersdecor.blocks.EdFreezer;
 import wile.engineersdecor.blocks.EdHopper;
 import wile.engineersdecor.blocks.EdPlacer;
 
@@ -35,18 +36,30 @@ public class EdCapabilities {
         Block factoryPlacerBlock = BuiltInRegistries.BLOCK.get(
                 ResourceLocation.fromNamespaceAndPath("engineersdecor", "factory_placer")
         );
-        if (factoryPlacerBlock != null) {
-            event.registerBlock(
-                    Capabilities.ItemHandler.BLOCK,
-                    (level, pos, state, be, side) -> {
-                        if (be instanceof EdPlacer.PlacerTileEntity placer) {
-                            return placer.item_handler_;
-                        }
-                        return null;
-                    },
-                    factoryPlacerBlock
-            );
-        }
+        event.registerBlock(
+                Capabilities.ItemHandler.BLOCK,
+                (level, pos, state, be, side) -> {
+                    if (be instanceof EdPlacer.PlacerTileEntity placer) {
+                        return placer.item_handler_;
+                    }
+                    return null;
+                },
+                factoryPlacerBlock
+        );
+
+        Block freezerBlock = BuiltInRegistries.BLOCK.get(ResourceLocation.fromNamespaceAndPath("engineersdecor", "small_freezer"));
+        // 物品能力
+        event.registerBlock(Capabilities.ItemHandler.BLOCK,
+                (level, pos, state, be, side) -> be instanceof EdFreezer.FreezerTileEntity freezer ? freezer.item_handler_ : null,
+                freezerBlock);
+        // 流体能力
+        event.registerBlock(Capabilities.FluidHandler.BLOCK,
+                (level, pos, state, be, side) -> be instanceof EdFreezer.FreezerTileEntity freezer ? freezer.fluid_handler_ : null,
+                freezerBlock);
+        // 能量能力
+        event.registerBlock(Capabilities.EnergyStorage.BLOCK,
+                (level, pos, state, be, side) -> be instanceof EdFreezer.FreezerTileEntity freezer ? freezer : null,
+                freezerBlock);
 
     }
 }

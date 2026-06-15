@@ -9,6 +9,7 @@ import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import wile.engineersdecor.blocks.EdFreezer;
 import wile.engineersdecor.blocks.EdHopper;
+import wile.engineersdecor.blocks.EdMineralSmelter;
 import wile.engineersdecor.blocks.EdPlacer;
 
 // 在事件注册中使用
@@ -61,5 +62,21 @@ public class EdCapabilities {
                 (level, pos, state, be, side) -> be instanceof EdFreezer.FreezerTileEntity freezer ? freezer : null,
                 freezerBlock);
 
+        // --- 矿物熔炼炉能力注册 ---
+        Block mineralSmelterBlock = BuiltInRegistries.BLOCK.get(
+                ResourceLocation.fromNamespaceAndPath("engineersdecor", "small_mineral_smelter") // 请确认准确注册名
+        );
+        // 物品能力
+        event.registerBlock(Capabilities.ItemHandler.BLOCK,
+                (level, pos, state, be, side) -> be instanceof EdMineralSmelter.MineralSmelterTileEntity smelter ? smelter.item_handler_ : null,
+                mineralSmelterBlock);
+        // 流体能力
+        event.registerBlock(Capabilities.FluidHandler.BLOCK,
+                (level, pos, state, be, side) -> be instanceof EdMineralSmelter.MineralSmelterTileEntity smelter ? smelter.fluid_handler_ : null,
+                mineralSmelterBlock);
+        // 能量能力
+        event.registerBlock(Capabilities.EnergyStorage.BLOCK,
+                (level, pos, state, be, side) -> be instanceof EdMineralSmelter.MineralSmelterTileEntity smelter ? smelter.energy_handler_ : null,
+                mineralSmelterBlock);
     }
 }

@@ -1,7 +1,6 @@
 {
   "replace": false,
   "values": [
-    "#forge:stone",
     "minecraft:stone",
     "minecraft:granite",
     "minecraft:polished_granite",
